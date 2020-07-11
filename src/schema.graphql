@@ -1,0 +1,69 @@
+type Member {
+  memberID: ID!
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+  whatsAppNumber: String
+  dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "OUT")
+  leader: [Leader] @relation(name: "IS_A", direction: "OUT")
+  ministry: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
+  occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
+  bacenta: [Bacenta] @relation(name: "BELONGS_TO", direction: "OUT")
+  center: Centre @relation(name: "BELONGS_TO", direction: "OUT")
+  gender: Gender @relation(name: "HAS_GENDER", direction: "OUT")
+  maritalStatus: MaritalStatus @relation(name: "IS", direction: "OUT")
+}
+
+type Gender {
+  gender: String
+  members: [Member] @relation(name: "HAS_GENDER", direction: "IN")
+}
+
+type MaritalStatus {
+  status: String
+  members: [Member] @relation(name: "HAS_MARRITAL_STATUS", direction: "IN")
+}
+
+type Leader {
+  rank: String
+  title: String
+  members: [Member] @relation(name: "IS_A", direction: "OUT")
+  appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
+  centerStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
+  transferDate: TimeGraph @relation(name: "TRANSFERED_ON", direction: "OUT")
+  terminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "OUT")
+}
+
+type Region {
+  name: String
+  leader: Leader @relation(name: "LEADS", direction: "IN")
+}
+
+type Sonta {
+  name: String
+  leader: Leader @relation(name: "LEADS", direction: "IN")
+}
+
+type TimeGraph {
+  date: Date
+}
+
+type Occupation {
+  occupation: String
+  members: [Member] @relation(name: "HAS_OCCUPATION", direction: "IN")
+}
+
+type Centre {
+  name: String
+  bacentas: [Bacenta] @relation(name: "HAS_BACENTA", direction: "IN")
+  ministries: [Sonta] @relation(name: "HAS_SONTA", direction: "OUT")
+  leader: Leader @relation(name: "LEADS", direction: "IN")
+  members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
+}
+
+type Bacenta {
+  name: String
+  leader: Leader @relation(name: "LEADS", direction: "IN")
+  members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
+}
