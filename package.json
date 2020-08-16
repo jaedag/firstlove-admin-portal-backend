@@ -5,11 +5,11 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-dev": "./node_modules/.bin/nodemon --watch src --ext js,graphql --exec babel-node  src/index.js",
+    "start-dev": "nodemon --watch src --ext js,graphql --exec babel-node  src/index.js",
     "build": "babel src -d build && shx cp .env build && shx cp src/schema.graphql build",
     "now-build": "babel src -d build && shx cp .env build && shx cp src/schema.graphql build",
     "start": "npm run build && node build/index.js",
-    "seedDb": "./node_modules/.bin/babel-node src/seed/seed-db.js"
+    "seedDb": "babel-node src/seed/seed-db.js"
   },
   "author": "William Lyon",
   "license": "MIT",
@@ -18,7 +18,7 @@
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
     "apollo-link-http": "^1.5.15",
-    "apollo-server": "^2.8.2",
+    "apollo-server": "^2.16.1",
     "dotenv": "^7.0.0",
     "graphql-tag": "^2.10.1",
     "neo4j-driver": "^1.7.5",
@@ -43,5 +43,13 @@
       "prettier --write",
       "git add"
     ]
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rynkobes/firstlove-admin-portal-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Rynkobes/firstlove-admin-portal-backend/issues"
+  },
+  "homepage": "https://github.com/Rynkobes/firstlove-admin-portal-backend#readme"
 }
