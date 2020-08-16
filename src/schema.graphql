@@ -1,0 +1,68 @@
+type Member {
+  memberID: ID!
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+  whatsAppNumber: String
+  dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "OUT")
+  ministry: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
+  occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
+  bacenta: [Bacenta] @relation(name: "BELONGS_TO", direction: "OUT")
+  gender: Gender @relation(name: "HAS_GENDER", direction: "OUT")
+  maritalStatus: MaritalStatus @relation(name: "IS", direction: "OUT")
+}
+
+type Gender {
+  gender: String
+  members: [Member] @relation(name: "HAS_GENDER", direction: "IN")
+}
+
+type MaritalStatus {
+  status: String
+  members: [Member] @relation(name: "HAS_MARRITAL_STATUS", direction: "IN")
+}
+
+type TimeGraph {
+  date: Date
+}
+
+type Occupation {
+  occupation: String
+  members: [Member] @relation(name: "HAS_OCCUPATION", direction: "IN")
+}
+
+#Church Structure from Town downwards (Bacenta System)
+type Town {
+  name: String
+  leader: Member @relation(name: "LEADS", direction: "IN")
+}
+
+type Communtiy {
+  name: String
+  town: Town @relation(name: "HAS_COMMUNITY", direction: "IN)
+  leader: Member @relation(name: "LEADS", direction: "IN")
+}
+
+type Centre {
+  name: String
+  community: Communtiy @relation(name:"HAS_CENTRE", direction: "IN")
+  bacentas: [Bacenta] @relation(name: "HAS_BACENTA", direction: "OUT")
+  basonta: [Basonta] @relation(name: "HAS_BASONTA", direction: "OUT")
+  leader: Member @relation(name: "LEADS", direction: "IN")
+  members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
+}
+
+type Bacenta {
+  name: String
+  centre: Centre @relation (name: "HAS_BACENTA", direction: "IN")
+  leader: Member @relation(name: "LEADS", direction: "IN")
+  members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
+}
+
+#Church Structure in a Town downwards (Basonta System)
+type Sonta {
+  name: String
+  leader: Member @relation(name: "LEADS", direction: "IN")
+  town: Town @relation(name: "HAS_SONTA", direction: "IN)
+}
