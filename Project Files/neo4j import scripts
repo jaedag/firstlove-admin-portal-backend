@@ -72,7 +72,6 @@ MATCH (m:Member {firstName: line.bacentaLeaderFirstName, lastName: line.bacentaL
 (b:Bacenta {name:line.bacentaName})
 CREATE (m)-[:LEADS]->(b)
 
-
 CREATE (c)-[:HAS_BACENTA]->(b)
 
 // Q6 Sonta Leader Relationships
@@ -81,6 +80,7 @@ MATCH (m:Member {firstName: line.LeaderFirstName, lastName: line.LeaderLastName}
 CREATE (m)-[:LEADS]->(s)
 
 //Q7 Apostle in Charge of Kasoa Town: Rev Hubert Duell
-MATCH (m:Member {lastName:'Duell'})
-CREATE (m)-[:LEADS]->(t:Town {name:'Kasoa'})
+MATCH (m:Member), (t:Town)
+WHERE m.lastName = 'Duell' AND t.name = 'Kasoa'
+MERGE (m)-[:LEADS]->(t)
 RETURN m
