@@ -1,7 +1,3 @@
-//Delete all Entries
-match (n)
-detach delete n
-
 // Q1 Town, Community and Centre data import script
 
 LOAD CSV WITH HEADERS FROM "file:///Centres-Table.csv" as line
@@ -70,13 +66,21 @@ LOAD CSV WITH HEADERS FROM "file:///Communities.csv" as line
 MATCH (m:Member {firstName: line.LeaderFirstName, lastName: line.LeaderLastName}), (c:Community {name:line.Name})
 CREATE (m)-[:LEADS]->(c)
 
-//Q5 Bacenta Leaders relationships
+//Q5 Bacenta Leaders relationships, bacenta-centre relationships
 LOAD CSV WITH HEADERS FROM "file:///Bacenta-Table.csv" as line
-MATCH (m:Member {firstName: line.bacentaLeaderFirstName, lastName: line.bacentaLeaderLastName}), (b:Bacenta {name:line.bacentaName}),(c:Centre {centreCode: line.centreCode})
+MATCH (m:Member {firstName: line.bacentaLeaderFirstName, lastName: line.bacentaLeaderLastName}),(c:Centre {centreCode: line.centreCode}),
+(b:Bacenta {name:line.bacentaName})
 CREATE (m)-[:LEADS]->(b)
-CREATE (b)-[:BELONGS_TO]->(c)
+
+
+CREATE (c)-[:HAS_BACENTA]->(b)
 
 // Q6 Sonta Leader Relationships
 LOAD CSV WITH HEADERS FROM "file:///Sonta-Table.csv" as line
 MATCH (m:Member {firstName: line.LeaderFirstName, lastName: line.LeaderLastName}), (s:Sonta {name:line.Ministry})
 CREATE (m)-[:LEADS]->(s)
+
+//Q7 Apostle in Charge of Kasoa Town: Rev Hubert Duell
+MATCH (m:Member {lastName:'Duell'})
+CREATE (m)-[:LEADS]->(t:Town {name:'Kasoa'})
+RETURN m

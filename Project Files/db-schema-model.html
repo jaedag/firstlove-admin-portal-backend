@@ -1,0 +1,84 @@
+<!-- Arrows Modelling Tool-->
+<ul class="graph-diagram-markup" data-internal-scale="0.93" data-external-scale="1">
+    <li class="node" data-node-id="0" data-x="194.94149586511023" data-y="-327.9142345916064">
+      <span class="caption">MEMBER</span><dl class="properties"><dt>memberID</dt><dd>ID</dd><dt>firstName</dt><dd>String</dd><dt>lastName</dt><dd>String</dd><dt>email</dt><dd>String</dd><dt>phoneNumber</dt><dd>String</dd><dt>whatsAppNumber</dt><dd>String</dd></dl></li>
+    <li class="node" data-node-id="1" data-x="891.3359725302022" data-y="-98.05048915318079">
+      <span class="caption">MARITAL STATUS</span>
+    </li>
+    <li class="node" data-node-id="2" data-x="194.94149586511023" data-y="154.47966912396274">
+      <span class="caption">Occupation</span>
+    </li>
+    <li class="node" data-node-id="3" data-x="596.7040995228956" data-y="63.60502730395856">
+      <span class="caption">Gender</span>
+    </li>
+    <li class="node" data-node-id="4" data-x="970.4390670534165" data-y="-273.8540290953623">
+      <span class="caption">Date of Birth</span>
+    </li>
+    <li class="node" data-node-id="5" data-x="-267.28212919689355" data-y="-401.48894973028314">
+      <span class="caption">Bacenta</span>
+    </li>
+    <li class="node" data-node-id="7" data-x="-63.18548826187382" data-y="-666.3222830636165">
+      <span class="caption">Centre</span>
+    </li>
+    <li class="node" data-node-id="8" data-x="194.94149586511023" data-y="-904.0437990218885">
+      <span class="caption">Community</span>
+    </li>
+    <li class="node" data-node-id="9" data-x="596.7040995228956" data-y="-904.0437990218885">
+      <span class="caption">Town</span>
+    </li>
+    <li class="node" data-node-id="10" data-x="970.4390670534165" data-y="-693.4627113947791">
+      <span class="caption">Sonta</span>
+    </li>
+    <li class="node" data-node-id="11" data-x="929.6716851128472" data-y="-472.91752115885396">
+      <span class="caption">Basonta</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="1">
+      <span class="type">:HAS_STATUS</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="2">
+      <span class="type">:HAS_OCCUPATION</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="3">
+      <span class="type">:HAS_GENDER</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="4">
+      <span class="type">:WAS_BORN_ON</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="5">
+      <span class="type">:LEADS</span>
+    </li>
+    <li class="relationship" data-from="7" data-to="5">
+      <span class="type">:HAS_BACENTA</span>
+    </li>
+    <li class="relationship" data-from="8" data-to="7">
+      <span class="type">:HAS_CENTRE</span>
+    </li>
+    <li class="relationship" data-from="9" data-to="8">
+      <span class="type">:HAS_COMMUNITY</span>
+    </li>
+    <li class="relationship" data-from="9" data-to="10">
+      <span class="type">:HAS_SONTA</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="5">
+      <span class="type">:BELONGS_TO</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="7">
+      <span class="type">:LEADS</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="8">
+      <span class="type">:LEADS</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="9">
+      <span class="type">:LEADS</span>
+    </li>
+    <li class="relationship" data-from="10" data-to="11"></li>
+    <li class="relationship" data-from="0" data-to="11">
+      <span class="type">:BELONGS_TO</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="11">
+      <span class="type">:LEADS</span>
+    </li>
+    <li class="relationship" data-from="7" data-to="11">
+      <span class="type">:HAS_BASONTA</span>
+    </li>
+  </ul>
