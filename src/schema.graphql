@@ -6,11 +6,11 @@ type Member {
   phoneNumber: String
   whatsAppNumber: String
   dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "OUT")
-  #leader: [Leader] @relation(name: "IS_A", direction: "OUT")
+  leader: [Leader] @relation(name: "IS_A", direction: "OUT")
   ministry: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
   occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
   bacenta: [Bacenta] @relation(name: "BELONGS_TO", direction: "OUT")
-  #centre: Centre @relation(name: "BELONGS_TO", direction: "OUT")
+  center: Centre @relation(name: "BELONGS_TO", direction: "OUT")
   gender: Gender @relation(name: "HAS_GENDER", direction: "OUT")
   maritalStatus: MaritalStatus @relation(name: "IS", direction: "OUT")
 }
@@ -25,20 +25,25 @@ type MaritalStatus {
   members: [Member] @relation(name: "HAS_MARRITAL_STATUS", direction: "IN")
 }
 
-#Terry's Code
-#  rank: String
-#  title: String
-#  members: [Member] @relation(name: "IS_A", direction: "OUT")
-#  appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
-#  centeStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
-#  transferDate: TimeGraph @relation(name: "TRANSFERED_ON", direction: "OUT")
-#  terminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "OUT")
-#}
+type Leader {
+  rank: String
+  title: String
+  members: [Member] @relation(name: "IS_A", direction: "OUT")
+  appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
+  centerStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
+  transferDate: TimeGraph @relation(name: "TRANSFERED_ON", direction: "OUT")
+  terminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "OUT")
+}
 
-#type Town {
-#  name: String
-#  leader: Leader @relation(name: "LEADS", direction: "IN")
-#}
+type Region {
+  name: String
+  leader: Leader @relation(name: "LEADS", direction: "IN")
+}
+
+type Sonta {
+  name: String
+  leader: Leader @relation(name: "LEADS", direction: "IN")
+}
 
 type TimeGraph {
   date: Date
@@ -49,72 +54,16 @@ type Occupation {
   members: [Member] @relation(name: "HAS_OCCUPATION", direction: "IN")
 }
 
-#Church Structure from Town downwards (Bacenta System)
-type Town {
-  name: String
-  leader: Member @relation(name: "LEADS", direction: "IN")
-}
-
-type Communtiy {
-  name: String
-  town: Town @relation(name: "HAS_COMMUNITY", direction: "IN)
-  leader: Member @relation(name: "LEADS", direction: "IN")
-}
-
 type Centre {
   name: String
-  community: Communtiy @relation(name:"HAS_CENTRE", direction: "IN")
-  bacentas: [Bacenta] @relation(name: "HAS_BACENTA", direction: "OUT")
-  basonta: [Basonta] @relation(name: "HAS_BASONTA", direction: "OUT")
-  leader: Member @relation(name: "LEADS", direction: "IN")
+  bacentas: [Bacenta] @relation(name: "HAS_BACENTA", direction: "IN")
+  ministries: [Sonta] @relation(name: "HAS_SONTA", direction: "OUT")
+  leader: Leader @relation(name: "LEADS", direction: "IN")
   members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 }
 
 type Bacenta {
   name: String
-  centre: Centre @relation (name: "HAS_BACENTA", direction: "IN")
-  leader: Member @relation(name: "LEADS", direction: "IN")
+  leader: Leader @relation(name: "LEADS", direction: "IN")
   members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 }
-
-#Church Structure in a Town downwards (Basonta System)
-type Sonta {
-  name: String
-  leader: Member @relation(name: "LEADS", direction: "IN")
-  town: Town @relation(name: "HAS_SONTA", direction: "IN)
-}
-
-#debatable whether we need this for now
-#type Basonta {
-#  name: String
-#  leader: Member @relation(name: "LEADS", direction: "IN")
-#  sonta: Sonta @relation(name: "HAS_BASONTA",direction: "IN")
-#}
-
-#Total membership
-type Query {
-  memberCount: Int! @cypher(statement: "MATCH (m:Member) RETURN COUNT(m)")
-}
-
-#total number of Communities
-type Query {
-  communityCount: Int! @cypher(statement: "MATCH (c:Community) RETURN COUNT(c)")
-}
-
-#total number of Ministries
-type Query {
-  ministryCount: Int! @cypher(statement: "MATCH (m:Sonta) RETURN COUNT(m)")
-}
-
-#Create new member*
-type Mutation ($firstName: String,$lastName: String, $centre: String {
-  Member{
-    firstName 
-    lastName
-  }
-   
-
-
-#Delete Member from the Church
-
-#Adding leader relationship between a member and a group
