@@ -6,11 +6,11 @@ type Member {
   phoneNumber: String
   whatsAppNumber: String
   dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "OUT")
-  leader: [Leader] @relation(name: "IS_A", direction: "OUT")
+  #leader: [Leader] @relation(name: "IS_A", direction: "OUT")
   ministry: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
   occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
   bacenta: [Bacenta] @relation(name: "BELONGS_TO", direction: "OUT")
-  center: Centre @relation(name: "BELONGS_TO", direction: "OUT")
+  #centre: Centre @relation(name: "BELONGS_TO", direction: "OUT")
   gender: Gender @relation(name: "HAS_GENDER", direction: "OUT")
   maritalStatus: MaritalStatus @relation(name: "IS", direction: "OUT")
 }
@@ -37,12 +37,12 @@ type Leader {
 
 type Region {
   name: String
-  leader: Leader @relation(name: "LEADS", direction: "IN")
+  #leader: Leader @relation(name: "LEADS", direction: "IN")
 }
 
 type Sonta {
   name: String
-  leader: Leader @relation(name: "LEADS", direction: "IN")
+  #leader: Leader @relation(name: "LEADS", direction: "IN")
 }
 
 type TimeGraph {
@@ -58,12 +58,12 @@ type Centre {
   name: String
   bacentas: [Bacenta] @relation(name: "HAS_BACENTA", direction: "IN")
   ministries: [Sonta] @relation(name: "HAS_SONTA", direction: "OUT")
-  leader: Leader @relation(name: "LEADS", direction: "IN")
+  centreLeader: Member @relation(name: "LEADS", direction: "IN")
   members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 }
 
 type Bacenta {
   name: String
-  leader: Leader @relation(name: "LEADS", direction: "IN")
+  bacentaLeader: Member @relation(name: "LEADS", direction: "IN")
   members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 }
