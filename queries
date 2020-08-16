@@ -1,0 +1,17 @@
+#Names of the Leaders of Each Sonta
+{
+  Sonta{
+    name
+    leader{
+      firstName
+      lastName
+    }
+  }
+}
+#Display a single member
+
+#Create members in the database
+
+#Update members in the database
+
+#Delete Members in the database
