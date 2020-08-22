@@ -1,5 +1,5 @@
 type Member {
-	memberID: ID!
+	memberID: ID @cypher(statement: "CALL apoc.create.uuid()")
 	firstName: String
 	lastName: String
 	email: String
@@ -10,9 +10,8 @@ type Member {
 	ministry: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
 	occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
 	bacenta: [Bacenta] @relation(name: "BELONGS_TO", direction: "OUT")
-	#centre: Centre @relation(name: "BELONGS_TO", direction: "OUT")
 	gender: Gender @relation(name: "HAS_GENDER", direction: "OUT")
-	maritalStatus: MaritalStatus @relation(name: "IS", direction: "OUT")
+	maritalStatus: MaritalStatus @relation(name: ":HAS_MARITAL_STATUS", direction: "OUT")
 }
 
 type Gender {
@@ -22,18 +21,22 @@ type Gender {
 
 type MaritalStatus {
 	status: String
-	members: [Member] @relation(name: "HAS_MARRITAL_STATUS", direction: "IN")
+	members: [Member] @relation(name: "HAS_MARITAL_STATUS", direction: "IN")
 }
 
-type Leader {
-	rank: String
-	title: String
-	members: [Member] @relation(name: "IS_A", direction: "OUT")
-	appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
-	centerStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
-	transferDate: TimeGraph @relation(name: "TRANSFERED_ON", direction: "OUT")
-	terminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "OUT")
-}
+#We Revist this part after the project
+#type Title {
+#	title: String #Pastor, Reverend, Apostle, Bishop (Mother)
+#	members: [Member] @relation(name: "HAS_TTILE", direction: "OUT")
+#	appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
+#}
+#type Leader {
+#	rank: String #bacenta Leader, Basonta leader, Centre Leader, Sonta Leader, Community Leader, GSO, Apostle
+#	members: [Member] @relation(name: "IS_A", direction: "OUT")
+#	roleStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
+#	transferDate: TimeGraph @relation(name: "TRANSFERED_ON", direction: "OUT")
+#	terminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "OUT")
+#}
 
 type TimeGraph {
 	date: Date
@@ -84,4 +87,39 @@ type Query {
 	centreCount: Int! @cypher(statement: "MATCH (c:Centre) RETURN COUNT(c)")
 	sontaCount: Int! @cypher(statement: "MATCH (s:Sonta) RETURN COUNT(s)")
 	memberCount: Int! @cypher(statement: "MATCH (m:Member) RETURN COUNT(m)")
+}
+
+type Mutation {
+	AddMember(
+		firstName: String!
+		lastName: String!
+		email: String!
+		phoneNumber: String!
+		whatsAppNumber: String
+		dob: String!
+		ministry: String
+		occupation: String
+		bacenta: String!
+		maritalStatus: String!
+		gender: String!
+	): Member
+	@cypher(statement:
+	"""
+	MERGE (m:Member {email:$email})
+	ON CREATE SET
+		m.memberId = apoc.create.uuid(),
+		m.firstName = $firstName,
+		m.lastName = $lastName,
+		m.email = $email,
+		m.phoneNumber = $phoneNumber,
+		m.whatsAppNumber = $whatsAppNumber
+	MERGE (m)-[:WAS_BORN_ON]-> (t:TimeGraph {date: $dob})
+	MERGE (m)-[:BELONGS_TO]-> (s:Sonta {name:$ministry})
+	MERGE (m)-[:HAS_OCCUPATION]-> (o:Occuptation {occupation:$occupation})
+	MERGE (m)-[:BELONGS_TO]-> (b:Bacenta {name:$bacenta})
+	MERGE (m)-[:HAS_MARITAL_STATUS]-> (ms:maritalStatus {status:$maritalStatus})
+	MERGE (m)-[:HAS_GENDER]-> (g:Gender {gender: $gender})
+	RETURN m
+	"""
+	)
 }

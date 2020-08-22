@@ -1,4 +1,5 @@
 import { typeDefs } from './graphql-schema';
+import { resolvers } from './resolvers';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import { v1 as neo4j } from 'neo4j-driver';
@@ -19,7 +20,8 @@ const app = express();
  */
 
 const schema = makeAugmentedSchema({
-	typeDefs
+	typeDefs,
+	resolvers
 });
 
 /*
@@ -28,7 +30,7 @@ const schema = makeAugmentedSchema({
  * with fallback to defaults
  */
 const driver = neo4j.driver(
-	process.env.NEO4J_URI || 'bolt://localhost:11002',
+	process.env.NEO4J_URI || 'bolt://localhost:11003',
 	neo4j.auth.basic(process.env.NEO4J_USER || 'jd_addy', process.env.NEO4J_PASSWORD || 'pneumatik0s'),
 	{
 		encrypted: 'ENCRYPTION_OFF'

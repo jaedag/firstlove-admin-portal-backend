@@ -1,0 +1,90 @@
+#Names of the Leaders of Each Sonta
+{
+  Sonta{
+    name
+    leader{
+      firstName
+      lastName
+    }
+  }
+}
+
+#Display all member
+{
+  Member(firstName: $firstName) {
+    firstName
+    lastName
+    email
+    phoneNumber
+    whatsAppNumber
+    _id
+    dob{date {
+      year
+      month
+      day
+      formatted
+    }
+    }
+    ministry{name}
+    occupation{occupation}
+    bacenta{name}
+    gender{gender}
+    maritalStatus{status}
+  }
+}
+
+#Create members in the database
+
+
+#Update members in the database
+
+#Delete Members in the database
+mutation{
+  DeleteMember(memberID:151){
+    firstName
+    lastName
+  }
+}
+
+mutation{
+  
+  CreateMember(firstName: "John-Dag",lastName: "Addy",memberID:151,email:"jaedagy@gmail.com",phoneNumber:"02642428700",whatsAppNumber: "02642428700" ) {
+    firstName
+    lastName
+    email
+    phoneNumber
+    whatsAppNumber
+    _id
+    dob{date {
+      year
+      month
+      day
+      formatted
+    }
+    }
+    ministry{name}
+    occupation{occupation}
+    bacenta{name}
+    gender{gender}
+    maritalStatus{status}
+  }
+}
+
+
+Old Stuff
+
+
+const resolvers = {
+	Mutation: {
+		async addMember(parent, args, context, ingo) {
+			const member = new Member({
+				firstName: args.firstName,
+				lastName: args.lastName,
+				email: args.email
+			});
+			await member.save();
+			return member;
+		}
+	}
+};
+
