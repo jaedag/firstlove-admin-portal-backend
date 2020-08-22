@@ -48,12 +48,12 @@ type Leads @relation(name: "LEADS") {
 type TimeGraph {
 	date: Date
 
-	dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "IN")
-	titleAppointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "IN")
-	leaderRoleStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "IN")
-	leaderRoleTerminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "IN")
-	leadershipStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "IN")
-    leadershipEndDate: TimeGraph @relation(name: "ENDED_ON", direction: "IN")
+	memberDob: Member @relation(name: "WAS_BORN_ON", direction: "IN")
+	titleAppointmentDate: Title @relation(name: "APPOINTED_ON", direction: "IN")
+	leaderRoleStartDate: Leader @relation(name: "STARTED_ON", direction: "IN")
+	leaderRoleTerminationDate: Leader @relation(name: "TERMINATED_ON", direction: "IN")
+	leadershipStartDate: Leads @relation(name: "STARTED_ON", direction: "IN")
+    leadershipEndDate: Leads @relation(name: "ENDED_ON", direction: "IN")
 }
 
 type Occupation {
@@ -64,7 +64,8 @@ type Occupation {
 type Town {
 	name: String
 	leader: Member @relation(name: "LEADS", direction: "IN")
-	basontas: [Sonta] @relation(name: "HAS_SONTA", direction: "OUT")
+	sontas: [Sonta] @relation(name: "HAS_SONTA", direction: "OUT")
+	communities: [Community] @relation(name: "HAS_COMMUNITY", direction: "OUT")
 }
 
 type Community {
@@ -76,7 +77,7 @@ type Community {
 type Centre {
 	name: String
 	community: Community @relation(name: "HAS_CENTRE", direction: "IN")
-	bacentas: [Bacenta] @relation(name: "HAS_BACENTA", direction: "IN")
+	bacentas: [Bacenta] @relation(name: "HAS_BACENTA", direction: "OUT")
 	leader: Member @relation(name: "LEADS", direction: "IN")
 	members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 }
@@ -92,7 +93,7 @@ type Sonta {
 	name: String
 	leader: Member @relation(name: "LEADS", direction: "IN")
 	town: Town @relation(name: "HAS_SONTA", direction: "IN")
-	members: [Sonta] @relation(name: "BELONGS_TO", direction: "IN")
+	members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 }
 
 #total number of
