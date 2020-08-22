@@ -1,0 +1,94 @@
+<ul class="graph-diagram-markup" data-internal-scale="1.69" data-external-scale="1">
+    <li class="node" data-node-id="0" data-x="205.33948932531985" data-y="127.69009290931801">
+      <span class="caption">Member</span><dl class="properties"><dt>memberID</dt><dd>ID</dd><dt>firstName</dt><dd>String</dd><dt>lastName</dt><dd>String</dd><dt>email</dt><dd>String</dd><dt>phoneNumber</dt><dd>String</dd><dt>whatsAppNumber</dt><dd>String</dd></dl></li>
+    <li class="node" data-node-id="1" data-x="658.6579665668144" data-y="394.2903300758548">
+      <span class="caption">MaritalStatus</span><dl class="properties"><dt>maritalStatus</dt><dd>String</dd></dl></li>
+    <li class="node" data-node-id="2" data-x="164.76013477390276" data-y="636.6717323144909">
+      <span class="caption">Occupation</span>
+    </li>
+    <li class="node" data-node-id="3" data-x="487.00456584593513" data-y="561.0868214919668">
+      <span class="caption">Gender</span><dl class="properties"><dt>gender</dt><dd>String</dd></dl></li>
+    <li class="node" data-node-id="4" data-x="742.3901984790825" data-y="205.49395156191034">
+      <span class="caption">DateofBirth</span>
+    </li>
+    <li class="node" data-node-id="5" data-x="-441.54921976295265" data-y="-206.5753564326724">
+      <span class="caption">Bacenta</span>
+    </li>
+    <li class="node" data-node-id="7" data-x="-167.20903230253097" data-y="-602.1942695882101">
+      <span class="caption">Centre</span>
+    </li>
+    <li class="node" data-node-id="8" data-x="205.33948932531985" data-y="-765.2066194705027">
+      <span class="caption">Community</span>
+    </li>
+    <li class="node" data-node-id="9" data-x="764.6593022061628" data-y="-824.2003122635872">
+      <span class="caption">Town</span>
+    </li>
+    <li class="node" data-node-id="10" data-x="928.5156434217603" data-y="-472.4736601628083">
+      <span class="caption">Sonta</span>
+    </li>
+    <li class="node" data-node-id="11" data-x="832.1741987500511" data-y="-162.40275281796997">
+      <span class="caption">Basonta</span>
+    </li>
+    <li class="node" data-node-id="12" data-x="205.33948932531985" data-y="-206.5753564326724">
+      <span class="caption">Leader</span><dl class="properties"><dt>role</dt><dd>String</dd><dt>roleStartDate</dt><dd>TimeGraph</dd><dt>roleTerminationDate</dt><dd>TimeGraph</dd></dl></li>
+    <li class="node" data-node-id="13" data-x="-303.48520435753494" data-y="151.53610534216523">
+      <span class="caption">Title</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="1">
+      <span class="type">:HAS_MARITAL_STATUS</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="2">
+      <span class="type">:HAS_OCCUPATION</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="3">
+      <span class="type">:HAS_GENDER</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="4">
+      <span class="type">:WAS_BORN_ON</span>
+    </li>
+    <li class="relationship" data-from="7" data-to="5">
+      <span class="type">:HAS_BACENTA</span>
+    </li>
+    <li class="relationship" data-from="8" data-to="7">
+      <span class="type">:HAS_CENTRE</span>
+    </li>
+    <li class="relationship" data-from="9" data-to="8">
+      <span class="type">:HAS_COMMUNITY</span>
+    </li>
+    <li class="relationship" data-from="9" data-to="10">
+      <span class="type">:HAS_SONTA</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="5">
+      <span class="type">:BELONGS_TO</span>
+    </li>
+    <li class="relationship" data-from="10" data-to="11"></li>
+    <li class="relationship" data-from="0" data-to="11">
+      <span class="type">:BELONGS_TO</span>
+    </li>
+    <li class="relationship" data-from="7" data-to="11">
+      <span class="type">:HAS_BASONTA</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="12">
+      <span class="type">:IS_A</span>
+    </li>
+    <li class="relationship" data-from="12" data-to="5">
+      <span class="type">:LEADS</span>
+    </li>
+    <li class="relationship" data-from="12" data-to="7">
+      <span class="type">:LEADS</span><dl class="properties"><dt>startDate</dt><dd>TimeGraph</dd><dt>terminationDate</dt><dd>TimeGraph</dd><dt>transferDate</dt><dd>TimeGraph</dd></dl></li>
+    <li class="relationship" data-from="12" data-to="8">
+      <span class="type">:LEADS</span>
+    </li>
+    <li class="relationship" data-from="12" data-to="9">
+      <span class="type">:LEADS</span>
+    </li>
+    <li class="relationship" data-from="12" data-to="11">
+      <span class="type">:LEADS</span>
+    </li>
+    <li class="relationship" data-from="12" data-to="10">
+      <span class="type">:LEADS</span>
+    </li>
+    <li class="relationship" data-from="0" data-to="13">
+      <span class="type">:HAS_TITLE</span>
+    </li>
+  </ul>

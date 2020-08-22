@@ -6,11 +6,12 @@ type Member {
 	phoneNumber: String
 	whatsAppNumber: String
 	dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "OUT")
-	#leader: [Leader] @relation(name: "IS_A", direction: "OUT")
-	ministry: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
+	leader: [Leader] @relation(name: "IS_A", direction: "OUT")
+	title: [Title] @relation(name: "HAS_TITLE", direction: "OUT")
+	sonta: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
 	occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
 	bacenta: [Bacenta] @relation(name: "BELONGS_TO", direction: "OUT")
-	gender: Gender @relation(name: "HAS_GENDER", direction: "OUT")
+	gender: [Gender]  @relation(name: "HAS_GENDER", direction: "OUT")
 	maritalStatus: MaritalStatus @relation(name: ":HAS_MARITAL_STATUS", direction: "OUT")
 }
 
@@ -25,21 +26,34 @@ type MaritalStatus {
 }
 
 #We Revist this part after the project
-#type Title {
-#	title: String #Pastor, Reverend, Apostle, Bishop (Mother)
-#	members: [Member] @relation(name: "HAS_TTILE", direction: "OUT")
-#	appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
-#}
-#type Leader {
-#	rank: String #bacenta Leader, Basonta leader, Centre Leader, Sonta Leader, Community Leader, GSO, Apostle
-#	members: [Member] @relation(name: "IS_A", direction: "OUT")
-#	roleStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
-#	transferDate: TimeGraph @relation(name: "TRANSFERED_ON", direction: "OUT")
-#	terminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "OUT")
-#}
+type Title {
+	title: String #Pastor, Reverend, Apostle, Bishop (Mother)
+	members: [Member] @relation(name: "HAS_TTILE", direction: "IN")
+	appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
+}
+type Leader {
+	rank: String #bacenta Leader, Basonta leader, Centre Leader, Sonta Leader, Community Leader, GSO, Apostle
+	members: [Member] @relation(name: "IS_A", direction: "IN")
+	roleStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
+	roleTerminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "OUT")
+}
+
+type Leads @relation(name: "LEADS") {
+    from: Leader
+    to: Bacenta
+    startDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
+    endDate: TimeGraph @relation(name: "ENDED_ON", direction: "OUT")
+}
 
 type TimeGraph {
 	date: Date
+
+	dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "IN")
+	titleAppointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "IN")
+	leaderRoleStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "IN")
+	leaderRoleTerminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "IN")
+	leadershipStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "IN")
+    leadershipEndDate: TimeGraph @relation(name: "ENDED_ON", direction: "IN")
 }
 
 type Occupation {
@@ -78,6 +92,7 @@ type Sonta {
 	name: String
 	leader: Member @relation(name: "LEADS", direction: "IN")
 	town: Town @relation(name: "HAS_SONTA", direction: "IN")
+	members: [Sonta] @relation(name: "BELONGS_TO", direction: "IN")
 }
 
 #total number of
