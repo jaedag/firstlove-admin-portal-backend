@@ -15,7 +15,10 @@ MERGE(C)-[:HAS_CENTRE]->(cen)
 
 // Q2 firstlove membership data Import script
 
+// Q2 firstlove membership data Import script
+
 LOAD CSV WITH HEADERS FROM "file:///Members.csv" as line
+ 
 CREATE(m:Member {memberId: apoc.create.uuid()})
 	SET 
     m.firstName = line.firstName,
@@ -32,7 +35,8 @@ MERGE(m)-[:HAS_GENDER]->(g)
 MERGE(ms: MaritalStatus {status: line.maritalStatus})
 MERGE(m)-[:HAS_MARITAL_STATUS]->(ms)
 
-MERGE(d: DateofBirth{date:line.dob})
+WITH line,m,datetime(line.dob) AS dob
+MERGE(d: DateofBirth{date:dob})
 MERGE(m)-[:WAS_BORN_ON]->(d)
 
 MERGE(b:Bacenta {name:line.bacenta})

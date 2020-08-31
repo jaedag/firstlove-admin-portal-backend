@@ -1,0 +1,46 @@
+# Add Member Mutation
+mutation {
+	AddMember(
+		firstName: "John-Dag"
+		lastName: "Addy"
+		email: "jaedagy@gmail.com"
+		phoneNumber: "0264248700"
+		whatsAppNumber: "0264248700"
+		gender: "Male"
+		dob: "1993-07-18"
+		bacenta: "AIT"
+		maritalStatus: "Single"
+		ministry: "Dancing Stars"
+	) {
+		firstName
+		lastName
+	}
+}
+
+# Fuzzy Searching by Name
+query {
+	fuzzyMemberByName(searchKey: "Batock") {
+		firstName
+		lastName
+	}
+}
+
+#Filtering based on criteria
+{
+	Member(
+		filter: {
+			gender: { gender: "Male" }
+			maritalStatus: { status: "Single" }
+			occupation: { occupation: "Doctor" }
+		}
+	) {
+		firstName
+		lastName
+		maritalStatus {
+			status
+		}
+		occupation {
+			occupation
+		}
+	}
+}

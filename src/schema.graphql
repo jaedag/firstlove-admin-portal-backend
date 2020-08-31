@@ -1,16 +1,16 @@
 type Member {
-	memberID: ID @cypher(statement: "CALL apoc.create.uuid()")
+	memberID: ID #@cypher(statement: "CALL apoc.create.uuid()")
 	firstName: String
 	lastName: String
 	email: String
 	phoneNumber: String
 	whatsAppNumber: String
-	dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "OUT")
+	dob: DateofBirth @relation(name: "WAS_BORN_ON", direction: "OUT")
 	ministry: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
 	occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
 	bacenta: [Bacenta] @relation(name: "BELONGS_TO", direction: "OUT")
 	gender: Gender @relation(name: "HAS_GENDER", direction: "OUT")
-	maritalStatus: MaritalStatus @relation(name: ":HAS_MARITAL_STATUS", direction: "OUT")
+	maritalStatus: MaritalStatus @relation(name: "HAS_MARITAL_STATUS", direction: "OUT")
 }
 
 type Gender {
@@ -23,10 +23,14 @@ type MaritalStatus {
 	members: [Member] @relation(name: "HAS_MARITAL_STATUS", direction: "IN")
 }
 
-type TimeGraph {
+type DateofBirth {
 	date: Date
-	dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "IN")
+	members: [Member] @relation(name: "WAS_BORN_ON", direction: "IN")
 }
+# type TimeGraph {
+# 	date: Date
+# 	members: [Member] @relation(name: "WAS_BORN_ON", direction: "IN")
+# }
 
 type Occupation {
 	occupation: String
@@ -74,6 +78,19 @@ type Query {
 	centreCount: Int! @cypher(statement: "MATCH (c:Centre) RETURN COUNT(c)")
 	sontaCount: Int! @cypher(statement: "MATCH (s:Sonta) RETURN COUNT(s)")
 	memberCount: Int! @cypher(statement: "MATCH (m:Member) RETURN COUNT(m)")
+}
+
+type Query {
+	fuzzyMemberByName(
+		searchKey: String! 
+		):[Member]
+		@cypher(statement: 
+		"""
+		CALL db.index.fulltext.queryNodes('memberNameIndex', $searchKey+'~') 
+		YIELD node
+		RETURN node
+		"""
+		)
 }
 
 type Mutation {
