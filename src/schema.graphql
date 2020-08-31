@@ -78,20 +78,21 @@ type Query {
 	centreCount: Int! @cypher(statement: "MATCH (c:Centre) RETURN COUNT(c)")
 	sontaCount: Int! @cypher(statement: "MATCH (s:Sonta) RETURN COUNT(s)")
 	memberCount: Int! @cypher(statement: "MATCH (m:Member) RETURN COUNT(m)")
+	fuzzyMemberByName(searchKey: String!):[Member] @cypher(statement: "CALL db.index.fulltext.queryNodes('memberNameIndex', $searchKey+'~') YIELD node RETURN node")
 }
 
-type Query {
-	fuzzyMemberByName(
-		searchKey: String! 
-		):[Member]
-		@cypher(statement: 
-		"""
-		CALL db.index.fulltext.queryNodes('memberNameIndex', $searchKey+'~') 
-		YIELD node
-		RETURN node
-		"""
-		)
-}
+# type Query {
+# 	fuzzyMemberByName(
+# 		searchKey: String! 
+# 		):[Member]
+# 		@cypher(statement: 
+# 		"""
+# 		CALL db.index.fulltext.queryNodes('memberNameIndex', $searchKey+'~') 
+# 		YIELD node
+# 		RETURN node
+# 		"""
+# 		)
+# }
 
 type Mutation {
 	AddMember(
