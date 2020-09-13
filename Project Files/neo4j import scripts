@@ -1,20 +1,24 @@
 // Q1 Town, Community and Centre data import script
-
-LOAD CSV WITH HEADERS FROM "file:///Centres-Table.csv" as line
-MERGE(t:Town {name: line.Town})
+LOAD CSV WITH HEADERS FROM "file:///Communities.csv" as line
+MERGE(t:Town {name: apoc.text.capitalizeAll(toLower(line.`NAME OF TOWN`))})
 SET 
 	t.townID = apoc.create.uuid()
-MERGE(C: Community {name: line.Community})
+MERGE(C: Community {name: apoc.text.capitalizeAll(toLower(trim(line.`NAME OF COMMUNITY`)))})
 	ON CREATE SET
    C.communityID = apoc.create.uuid()
-MERGE(t)-[:HAS_COMMUNITY]->(C)
-MERGE(cen: Centre{name:line.centreName})
+MERGE(t)-[:HAS_COMMUNITY]->(C);
+
+LOAD CSV WITH HEADERS FROM "file:///Centres-Table.csv" as line
+MERGE(cen: Centre{name:line.`CENTRE NAME`})
 	ON CREATE SET 
-    cen.centreCode = line.centreCode
+    cen.centreID = apoc.create.uuid()
+    cen.centreCode = line.'SERVICE CODE'
+ 	cen.latitude = line.LATITUDE
+    cen.longitude = line.LONGITUDE
 MERGE(C)-[:HAS_CENTRE]->(cen)
-
+MERGE (cen)-[:HAS_SERVICE_DAY]-> (sDay:ServiceDay {day: line.`SERVICE DAY`  })
+ 
 // Q2 firstlove membership data Import script
-
 LOAD CSV WITH HEADERS FROM "file:///Members.csv" as line
 CREATE(m:Member {memberId: apoc.create.uuid()})
 	SET 
