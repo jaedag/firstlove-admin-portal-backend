@@ -1,13 +1,13 @@
 type Member {
-	memberID: ID @cypher(statement: "CALL apoc.create.uuid()")
+	memberID: ID #@cypher(statement: "CALL apoc.create.uuid()")
 	firstName: String
 	lastName: String
 	email: String
 	phoneNumber: String
 	whatsAppNumber: String
 	dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "OUT")
-	leader: [Leader] @relation(name: "IS_A", direction: "OUT")
-	title: [Title] @relation(name: "HAS_TITLE", direction: "OUT")
+	leader: [Leader] @relation(name: "IS_LEADER", direction: "OUT")
+	# title: [Title] @relation(name: "HAS_TITLE", direction: "OUT")
 	sonta: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
 	occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
 	bacenta: [Bacenta] @relation(name: "BELONGS_TO", direction: "OUT")
@@ -26,34 +26,36 @@ type MaritalStatus {
 }
 
 #We Revist this part after the project
-type Title {
-	title: String #Pastor, Reverend, Apostle, Bishop (Mother)
-	members: [Member] @relation(name: "HAS_TTILE", direction: "IN")
-	appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
-}
+# type Title {
+# 	title: String #Pastor, Reverend, Apostle, Bishop (Mother)
+# 	members: [Member] @relation(name: "HAS_TTILE", direction: "IN")
+# 	appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
+# }
+
 type Leader {
 	rank: String #bacenta Leader, Basonta leader, Centre Leader, Sonta Leader, Community Leader, GSO, Apostle
-	members: [Member] @relation(name: "IS_A", direction: "IN")
+	title: String #pastor, reverend, apostle, bishop
+	members: [Member] @relation(name: "IS_LEADER", direction: "IN")
 	roleStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
 	roleTerminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "OUT")
 }
 
-type Leads @relation(name: "LEADS") {
-    from: Leader
-    to: Bacenta
-    startDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
-    endDate: TimeGraph @relation(name: "ENDED_ON", direction: "OUT")
-}
+# This is supposed to represent the start and stop date of a leads relation
+# type Leads @relation(name: "LEADS") {
+#     from: Leader
+#     to: Town
+#     startDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
+#     endDate: TimeGraph @relation(name: "ENDED_ON", direction: "OUT")
+# }
 
 type TimeGraph {
 	date: Date
-
 	memberDob: Member @relation(name: "WAS_BORN_ON", direction: "IN")
-	titleAppointmentDate: Title @relation(name: "APPOINTED_ON", direction: "IN")
+	# titleAppointmentDate: Title @relation(name: "APPOINTED_ON", direction: "IN")
 	leaderRoleStartDate: Leader @relation(name: "STARTED_ON", direction: "IN")
 	leaderRoleTerminationDate: Leader @relation(name: "TERMINATED_ON", direction: "IN")
-	leadershipStartDate: Leads @relation(name: "STARTED_ON", direction: "IN")
-    leadershipEndDate: Leads @relation(name: "ENDED_ON", direction: "IN")
+	# leadershipStartDate: Leads @relation(name: "STARTED_ON", direction: "IN")
+    # leadershipEndDate: Leads @relation(name: "ENDED_ON", direction: "IN")
 }
 
 type Occupation {
@@ -80,6 +82,12 @@ type Centre {
 	bacentas: [Bacenta] @relation(name: "HAS_BACENTA", direction: "OUT")
 	leader: Member @relation(name: "LEADS", direction: "IN")
 	members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
+	meetingDay: ServiceDay @relation(name:"MEETS_ON_DAY", direction: "OUT")
+}
+
+type ServiceDay {
+	day: String!
+	centre: Centre @relation(name: "MEETS_ON_DAY", direction: "IN")
 }
 
 type Bacenta {
