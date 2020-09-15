@@ -1,16 +1,17 @@
 type Member {
-	memberID: ID #@cypher(statement: "CALL apoc.create.uuid()")
+	memberID: ID! #@cypher(statement: "CALL apoc.create.uuid()")
 	firstName: String
+	otherName: String
 	lastName: String
 	email: String
 	phoneNumber: String
-	whatsAppNumber: String
+	whatsappNumber: String
 	dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "OUT")
 	leader: [Leader] @relation(name: "IS_LEADER", direction: "OUT")
-	# title: [Title] @relation(name: "HAS_TITLE", direction: "OUT")
+	title: [Title] @relation(name: "HAS_TITLE", direction: "OUT")
 	sonta: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
 	occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
-	bacenta: [Bacenta] @relation(name: "BELONGS_TO", direction: "OUT")
+	centre: [Centre] @relation(name: "BELONGS_TO", direction: "OUT")
 	gender: [Gender]  @relation(name: "HAS_GENDER", direction: "OUT")
 	maritalStatus: MaritalStatus @relation(name: ":HAS_MARITAL_STATUS", direction: "OUT")
 }
@@ -25,42 +26,41 @@ type MaritalStatus {
 	members: [Member] @relation(name: "HAS_MARITAL_STATUS", direction: "IN")
 }
 
+type Occupation {
+	occupation: String
+	members: [Member] @relation(name: "HAS_OCCUPATION", direction: "IN")
+}
+
 #We Revist this part after the project
-# type Title {
-# 	title: String #Pastor, Reverend, Apostle, Bishop (Mother)
-# 	members: [Member] @relation(name: "HAS_TTILE", direction: "IN")
-# 	appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
-# }
+type Title {
+	title: String! #Pastor, Reverend, Apostle, Bishop (Mother)
+	members: [Member] @relation(name: "HAS_TTILE", direction: "IN")
+	appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
+}
 
 type Leader {
 	rank: String #bacenta Leader, Basonta leader, Centre Leader, Sonta Leader, Community Leader, GSO, Apostle
-	title: String #pastor, reverend, apostle, bishop
 	members: [Member] @relation(name: "IS_LEADER", direction: "IN")
 	roleStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
 	roleTerminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "OUT")
 }
 
 # This is supposed to represent the start and stop date of a leads relation
-# type Leads @relation(name: "LEADS") {
-#     from: Leader
-#     to: Town
-#     startDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
-#     endDate: TimeGraph @relation(name: "ENDED_ON", direction: "OUT")
-# }
+type Leads @relation(name: "LEADS") {
+    from: Member
+    to: Leader
+    startDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
+    endDate: TimeGraph @relation(name: "ENDED_ON", direction: "OUT")
+}
 
 type TimeGraph {
 	date: Date
 	memberDob: Member @relation(name: "WAS_BORN_ON", direction: "IN")
-	# titleAppointmentDate: Title @relation(name: "APPOINTED_ON", direction: "IN")
+	titleAppointmentDate: Title @relation(name: "APPOINTED_ON", direction: "IN")
 	leaderRoleStartDate: Leader @relation(name: "STARTED_ON", direction: "IN")
 	leaderRoleTerminationDate: Leader @relation(name: "TERMINATED_ON", direction: "IN")
 	# leadershipStartDate: Leads @relation(name: "STARTED_ON", direction: "IN")
     # leadershipEndDate: Leads @relation(name: "ENDED_ON", direction: "IN")
-}
-
-type Occupation {
-	occupation: String
-	members: [Member] @relation(name: "HAS_OCCUPATION", direction: "IN")
 }
 
 type Town {
@@ -94,12 +94,12 @@ type Bacenta {
 	name: String
 	centre: Centre @relation(name: "HAS_BACENTA", direction: "IN")
 	leader: Member @relation(name: "LEADS", direction: "IN")
-	members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
+	# members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 }
 
 type Sonta {
 	name: String
-	leader: Member @relation(name: "LEADS", direction: "IN")
+	leader: Leader @relation(name: "LEADS", direction: "IN")
 	town: Town @relation(name: "HAS_SONTA", direction: "IN")
 	members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 }
@@ -129,7 +129,7 @@ type Mutation {
 	): Member
 	@cypher(statement:
 	"""
-	MERGE (m:Member {email:$email})
+	MERGE (m:Member {whatsappNumber:$email})
 	ON CREATE SET
 		m.memberId = apoc.create.uuid(),
 		m.firstName = $firstName,
@@ -145,5 +145,74 @@ type Mutation {
 	MERGE (m)-[:HAS_GENDER]-> (g:Gender {gender: $gender})
 	RETURN m
 	"""
+	),
+	AddTown(
+		townName: String
+		lWhastappNumber: String
+		apostle: String
+	):Town
+	@cypher(statement:
+	"""
+	MERGE(t:Town {name:$townName})
+    	ON CREATE SET 
+		t.townID = apoc.create.uuid()
+	MERGE (m:Member {whatsappNumber: $lWhatsappNumber})
+	MATCH (l: Leader {rank: 'GSO'})
+	MERGE (m)-[:IS_LEADER]->(l)
+	MERGE(l)-[:LEADS]->(t)
+	"""
+	),
+	AddCommunity(
+		communityName: String
+		lWhastappNumber: String
+		town: String
+	):Community
+	@cypher(statement:
+	"""
+	MERGE(c:Community {name:$communityName})
+    	ON CREATE SET
+		c.communityID = apoc.create.uuid()
+	MERGE (m:Member {whatsappNumber: $lWhatsappNumber})
+	MATCH (l: Leader {rank: 'Community Leader'})
+	MATCH (t:Town {name: $town})
+	MERGE (t)-[:HAS_COMMUNITY]->(c)
+	MERGE (m)-[:IS_LEADER]->(l)
+	MERGE(l)-[:LEADS]->(c)
+	"""
+	),
+	AddCentre(
+		centreName: String
+		lWhastappNumber: String
+		community: String
+	):Community
+	@cypher(statement:
+	"""
+	MERGE(c:Centre {name:$centreName})
+    	ON CREATE SET 
+		c.communityID = apoc.create.uuid()
+	MERGE (m:Member {whatsappNumber: $lWhatsappNumber})
+	MATCH (l: Leader {rank: 'Centre Leader'})
+	MATCH (com:Community {name: $community})
+	MERGE (com)-[:HAS_CENTRE]->(c)
+	MERGE (m)-[:IS_LEADER]->(l)
+	MERGE(l)-[:LEADS]->(c)
+	"""
+	),
+	MakeCentreLeader(
+		lWhastappNumber: String
+		rank: String
+		groupToLead: String
+		startDate: Date
+		):
+	@cypher(statement:
+	"""
+	MATCH (m:Member {whatsappNumber: $lWhatsappNumber})
+	MATCH (l:Leader {rank:$rank})
+	MATCH (c:Centre {name: $groupToLead})
+	MERGE (d:TimeGraph {leaderRoleStartDate:$startDate})
+	MERGE (m)-[:IS_LEADER]->(l)
+	MERGE (l)-[:LEADS]->(c)
+	"""
 	)
+
 }

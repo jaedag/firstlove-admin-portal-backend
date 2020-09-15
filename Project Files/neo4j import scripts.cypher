@@ -25,8 +25,10 @@ MERGE(t:Town {name: apoc.text.capitalizeAll(toLower(trim(line.`TOWN`)))})
 	t.townID = apoc.create.uuid()
 with line,t
 MATCH (m: Member {whatsappNumber: line.`APOSTLE`})
-MERGE (l: Leader{rank:'Apostle', title:'Apostle'})
+MERGE (l: Leader{rank:'Apostle'})
+MERGE (title: Title{title:'Apostle'})
 MERGE (apostleship:Apostleship {name:'Frank Opoku'})
+MERGE (m)-[:HAS_TITLE]-> (title)
 MERGE (t)<-[:HAS_TOWN]-(apostleship)
 MERGE (m)-[:IS_LEADER]->(l)
 MERGE (l)-[:LEADS]->(apostleship)
@@ -45,8 +47,6 @@ MERGE(cen: Centre{name: apoc.text.capitalizeAll(toLower(trim(line.`CENTRE NAME`)
 	ON CREATE SET 
     cen.centreID = apoc.create.uuid(),
     cen.centreCode = line.`SERVICE CODE`
- 	// cen.location =  point({latitude:toFloat(line.LATITUDE), longitude:toFloat(line.LONGITUDE), crs:'WGS-84'})
-    // MERGE (cen { location: point({latitude:toFloat(line.LATITUDE), longitude:toFloat(line.LONGITUDE), crs:'WGS-84'})})
 MERGE (cen)<-[:HAS_CENTRE]-(C)
 
 with line,cen
@@ -88,7 +88,7 @@ MERGE(son: Sonta {name:line.`Ministry`})
 MERGE(m)-[:BELONGS_TO_MINISTRY]->(son)
 
 with line,m WHERE line.`Date of Birth`is not null
-MERGE(d: DateofBirth{date: datetime(line.`Date of Birth`)})
+MERGE(d: TimeGraph{date: datetime(line.`Date of Birth`)})
 MERGE(m)-[:WAS_BORN_ON]->(d)
 
 with line,m WHERE line.occupation is not null
