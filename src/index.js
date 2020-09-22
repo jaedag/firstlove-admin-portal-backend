@@ -21,7 +21,10 @@ const app = express();
 
 const schema = makeAugmentedSchema({
 	typeDefs,
-	resolvers
+  	config: {
+  	  query: false, // default
+		mutation: false
+	  }
 });
 
 /*
