@@ -6,14 +6,29 @@ type Member {
 	email: String
 	phoneNumber: String
 	whatsappNumber: String
-	dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "OUT")
-	leader: [Leader] @relation(name: "IS_LEADER", direction: "OUT")
-	title: [Title] @relation(name: "HAS_TITLE", direction: "OUT")
-	sonta: [Sonta] @relation(name: "BELONGS_TO", direction: "OUT")
-	occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
-	centre: [Centre] @relation(name: "BELONGS_TO", direction: "OUT")
+	pictureUrl: String
 	gender: [Gender]  @relation(name: "HAS_GENDER", direction: "OUT")
 	maritalStatus: MaritalStatus @relation(name: ":HAS_MARITAL_STATUS", direction: "OUT")
+	dob: TimeGraph @relation(name: "WAS_BORN_ON", direction: "OUT")
+	title: [Title] @relation(name: "HAS_TITLE", direction: "OUT")
+	sonta: [Sonta] @relation(name: "BELONGS_TO_SONTA", direction: "OUT")
+	occupation: [Occupation] @relation(name: "HAS_OCCUPATION", direction: "OUT")
+	# bacenta: [Bacenta] @relation(name: "BELONGS_TO_BACENTA", direction: "OUT")
+	# bacentaLeader: [Bacenta] @relation(name: "LEADS_BACENTA", direction: "OUT")
+	centre: [Centre] @relation(name: "BELONGS_TO_CENTRE", direction: "OUT")
+	centreLeader: [Centre] @relation(name: "LEADS_CENTRE", direction: "OUT")
+	communityLeader: [Community] @relation(name: "LEADS_COMMUNITY", direction: "OUT")
+	hallLeader: [Hall] @relation(name: "LEADS_HALL", direction: "OUT")
+	townGSO: [Town] @relation(name: "LEADS_TOWN", direction: "OUT")
+	campusGSO: [Campus] @relation(name: "LEADS_CAMPUS", direction: "OUT")
+	leadershipHistory: [LeaderHistory] @relation(name:"HAS_LEADERSHIP_HISTORY",direction:"OUT")
+}
+
+type LeaderHistory {
+	LogNo: Int
+	HistoryRecord: String
+	HistoryDate: TimeGraph @relation(name: "RECORDED_ON", direction: "OUT")
+	leaders: [Member] @relation(name:"HAS_LEADERSHIP_HISTORY",direction:"IN")
 }
 
 type Gender {
@@ -31,56 +46,105 @@ type Occupation {
 	members: [Member] @relation(name: "HAS_OCCUPATION", direction: "IN")
 }
 
-#We Revist this part after the project
 type Title {
 	title: String! #Pastor, Reverend, Apostle, Bishop (Mother)
 	members: [Member] @relation(name: "HAS_TTILE", direction: "IN")
-	appointmentDate: TimeGraph @relation(name: "APPOINTED_ON", direction: "OUT")
-}
-
-type Leader {
-	rank: String #bacenta Leader, Basonta leader, Centre Leader, Sonta Leader, Community Leader, GSO, Apostle
-	members: [Member] @relation(name: "IS_LEADER", direction: "IN")
-	roleStartDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
-	roleTerminationDate: TimeGraph @relation(name: "TERMINATED_ON", direction: "OUT")
 }
 
 # This is supposed to represent the start and stop date of a leads relation
-type Leads @relation(name: "LEADS") {
+# Leads Relatioships for Centre, Community/Hall, Town/Campus
+type LeadsCentre @relation(name: "LEADS_CENTRE") {
     from: Member
-    to: Leader
-    startDate: TimeGraph @relation(name: "STARTED_ON", direction: "OUT")
-    endDate: TimeGraph @relation(name: "ENDED_ON", direction: "OUT")
+    to: Centre
+    startDate: Date @relation(name: "STARTED_ON", direction: "OUT")
+    endDate: Date @relation(name: "ENDED_ON", direction: "OUT")
+}
+
+type LeadsCommunity @relation(name: "LEADS_COMMUNITY") {
+    from: Member
+    to: Community
+    startDate: Date @relation(name: "STARTED_ON", direction: "OUT")
+    endDate: Date @relation(name: "ENDED_ON", direction: "OUT")
+}
+
+type LeadsTown @relation(name: "LEADS_TOWN") {
+    from: Member
+    to: Town
+    startDate: Date @relation(name: "STARTED_ON", direction: "OUT")
+    endDate: Date @relation(name: "ENDED_ON", direction: "OUT")
+}
+
+type LeadsHall @relation(name: "LEADS_HALL") {
+    from: Member
+    to: Hall
+    startDate: Date @relation(name: "STARTED_ON", direction: "OUT")
+    endDate: Date @relation(name: "ENDED_ON", direction: "OUT")
+}
+
+type LeadsCampus @relation(name: "LEADS_CAMPUS") {
+    from: Member
+    to: Campus
+    startDate: Date @relation(name: "STARTED_ON", direction: "OUT")
+    endDate: Date @relation(name: "ENDED_ON", direction: "OUT")
+}
+#End of Leads Relationships
+
+type HasTitle @relation (name:"HAS_TITLE") {
+	from: Member
+	to: Title
+	yearAppointed: Date
 }
 
 type TimeGraph {
 	date: Date
 	memberDob: Member @relation(name: "WAS_BORN_ON", direction: "IN")
-	titleAppointmentDate: Title @relation(name: "APPOINTED_ON", direction: "IN")
-	leaderRoleStartDate: Leader @relation(name: "STARTED_ON", direction: "IN")
-	leaderRoleTerminationDate: Leader @relation(name: "TERMINATED_ON", direction: "IN")
-	# leadershipStartDate: Leads @relation(name: "STARTED_ON", direction: "IN")
-    # leadershipEndDate: Leads @relation(name: "ENDED_ON", direction: "IN")
+	# titleAppointmentDate: Member @relation(name: "APPOINTED_ON", direction: "IN")
+	LeaderHistoryDate: TimeGraph @relation(name: "RECORDED_ON", direction: "IN")
+}
+
+type Apostleship {
+	name: String
+	apostle: Member @relation(name: "LEADS_APOSTLESHIP", direction: "IN")
+	towns: [Town] @relation	(name:"HAS_TOWN",direction: OUT)
+	campuses: [Campus] @relation(name:"HAS_CAMPUS",direction: OUT)
+}
+
+# Campus-Hall, Town-Community
+type Campus {
+	name: String
+	gso: Member @relation(name: "LEADS_CAMPUS", direction: "IN")
+	sontas: [Sonta] @relation(name: "HAS_SONTA", direction: "OUT")
+	halls: [Hall] @relation(name: "HAS_HALL", direction: "OUT")
+	apostleship: Apostleship @relation (name:"HAS_CAMPUS",direction: IN)
+}
+
+type Hall {
+	name: String
+	hallLeader: Member @relation(name: "LEADS_HALL", direction: "IN")
+	campus: Campus @relation(name: "HAS_HALL", direction: "IN")
 }
 
 type Town {
 	name: String
-	leader: Member @relation(name: "LEADS", direction: "IN")
+	gso: Member @relation(name: "LEADS_TOWN", direction: "IN")
 	sontas: [Sonta] @relation(name: "HAS_SONTA", direction: "OUT")
 	communities: [Community] @relation(name: "HAS_COMMUNITY", direction: "OUT")
+	apostleship: Apostleship @relation (name:"HAS_TOWN",direction: IN)
 }
 
 type Community {
 	name: String
-	leader: Member @relation(name: "LEADS", direction: "IN")
+	communityLeader: Member @relation(name: "LEADS_COMMUNITY", direction: "IN")
 	town: Town @relation(name: "HAS_COMMUNITY", direction: "IN")
 }
 
+# Shared Units: Centre, Bacenta, Sonta
 type Centre {
 	name: String
 	community: Community @relation(name: "HAS_CENTRE", direction: "IN")
+	hall: Hall @relation(name: "HAS_CENTRE", direction: "IN")
 	bacentas: [Bacenta] @relation(name: "HAS_BACENTA", direction: "OUT")
-	leader: Member @relation(name: "LEADS", direction: "IN")
+	centreLeader: Member @relation(name: "LEADS_CENTRE", direction: "IN")
 	members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 	meetingDay: ServiceDay @relation(name:"MEETS_ON_DAY", direction: "OUT")
 }
@@ -93,43 +157,97 @@ type ServiceDay {
 type Bacenta {
 	name: String
 	centre: Centre @relation(name: "HAS_BACENTA", direction: "IN")
-	leader: Member @relation(name: "LEADS", direction: "IN")
+	leader: Member @relation(name: "LEADS_BACENTA", direction: "IN")
 	# members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 }
 
 type Sonta {
 	name: String
-	leader: Leader @relation(name: "LEADS", direction: "IN")
+	leader: Member @relation(name: "LEADS_SONTA", direction: "IN")
 	town: Town @relation(name: "HAS_SONTA", direction: "IN")
+	campus: [Campus] @relation(name: "HAS_SONTA", direction: "IN")
 	members: [Member] @relation(name: "BELONGS_TO", direction: "IN")
 }
 
-#total number of
+#Query Definitions
 type Query {
+#total number of
 	townCount: Int! @cypher(statement: "MATCH (t:Town) RETURN COUNT(t)")
 	communityCount: Int! @cypher(statement: "MATCH (c:Community) RETURN COUNT(c)")
 	centreCount: Int! @cypher(statement: "MATCH (c:Centre) RETURN COUNT(c)")
 	sontaCount: Int! @cypher(statement: "MATCH (s:Sonta) RETURN COUNT(s)")
 	memberCount: Int! @cypher(statement: "MATCH (m:Member) RETURN COUNT(m)")
+
+#At the Town Level
+	townCommunityCount(town: String): Int! @cypher(statement: "MATCH (c:Community)<-[:HAS_COMMUNITY]-(:Town {name:$town}) RETURN COUNT(c)")
+	townCentreCount(town: String): Int! @cypher(statement: "MATCH (:Town {name:$town})-[]-()-[:HAS_CENTRE]->(cen:Centre) RETURN COUNT(cen)")
+	townSontaCount(town: String): Int! @cypher(statement: "MATCH (s:Sonta)<-[:HAS_SONTA]-(:Town {name:$town}) RETURN COUNT(s)")
+	townMemberCount(town: String): Int! @cypher(statement: "MATCH (:Town {name:$town})-[:HAS_MEMBER]->(m:Member) RETURN COUNT(m)")
+
+#At the Community Level
+	communityCentreCount(community: String): Int! @cypher(statement: "MATCH (:Community {name:$community})-[:HAS_CENTRE]->(cen:Centre) RETURN COUNT(cen)")
+	communitySontaCount(community: String): Int! @cypher(statement: "MATCH (s:Sonta)<-[:HAS_SONTA]-(:Community {name:$community}) RETURN COUNT(s)")
+	# communityMemberCount(community: String): Int! @cypher(statement: "MATCH (:Community {name:$community})-[:HAS_MEMBER]->(m:Member) RETURN COUNT(m)")
+
+#fuzzy search
+	fuzzyMemberByName(searchKey: String!):[Member] @cypher(statement: "CALL db.index.fulltext.queryNodes('memberNameIndex', $searchKey+'~') YIELD node RETURN node")
+
+#Filtering
+	FilterMembers(
+		gender: String
+		maritalStatus: String
+		occupation: String
+		yearAppointed: Int
+		title: String
+		age: Int
+	):Member
+	@cypher(statement:
+	"""
+	MATCH (m:Member)-[:HAS_GENDER]->(g:Gender {gender: $gender})
+	WHERE EXISTS {
+    MATCH (:MaritalStatus {status:$maritalStatus})<-[:HAS_MARITAL_STATUS]-(m)-[:HAS_OCCUPATION]->(:Occupation {occupation:$occupation}) 
+    	WHERE EXISTS {
+        MATCH (t:Title{title:$title})<-[tit:HAS_TITLE]-(m) 
+        WHERE date(tit.yearAppointed).year = $yearAppointed
+        } WHERE EXISTS
+			{
+				MATCH (m)-[:WAS_BORN_ON]->(dob:TimeGraph)
+				WHERE date().year - date(dob.date).year = $age
+			}
+    }
+    RETURN m
+	"""
+	),
 }
 
+#Mutation Definitions
 type Mutation {
 	AddMember(
 		firstName: String!
 		lastName: String!
 		email: String!
 		phoneNumber: String!
-		whatsAppNumber: String
+		whatsappNumber: String
 		dob: String!
-		ministry: String
-		occupation: String
-		bacenta: String!
 		maritalStatus: String!
 		gender: String!
+		occupation: String
+		centre: String!
+		ministry: String
+		pictureUrl: String
+		titlePastor: String
+		titleRev: String
+		titleApostle: String
+		titleBishop: String
+		yearAppointed: Date
+		history1: String
+		history1Date: Date
+		history2: String
+		history2Date:Date
 	): Member
 	@cypher(statement:
 	"""
-	MERGE (m:Member {whatsappNumber:$email})
+	MERGE (m:Member {whatsappNumber:$whatsappNumber})
 	ON CREATE SET
 		m.memberId = apoc.create.uuid(),
 		m.firstName = $firstName,
@@ -137,19 +255,44 @@ type Mutation {
 		m.email = $email,
 		m.phoneNumber = $phoneNumber,
 		m.whatsAppNumber = $whatsAppNumber
+		m.pictureUrl = $pictureUrl
 	MERGE (m)-[:WAS_BORN_ON]-> (t:TimeGraph {date: $dob})
 	MERGE (m)-[:BELONGS_TO]-> (s:Sonta {name:$ministry})
-	MERGE (m)-[:HAS_OCCUPATION]-> (o:Occuptation {occupation:$occupation})
+	MERGE (m)-[:HAS_OCCUPATION]-> (o:Occupation {occupation:$occupation})
 	MERGE (m)-[:BELONGS_TO]-> (b:Bacenta {name:$bacenta})
 	MERGE (m)-[:HAS_MARITAL_STATUS]-> (ms:maritalStatus {status:$maritalStatus})
 	MERGE (m)-[:HAS_GENDER]-> (g:Gender {gender: $gender})
+
+	MATCH (title:Title {titlePas:$titlePastor})
+	CREATE (m)-[:HAS_TITLE]-> (title)
+	MATCH (title:Title {titleRev:$titleRev})
+	CREATE (m)-[:HAS_TITLE]-> (titleRev)
+	MATCH (title:Title {titleApostle:$titleApostle})
+	CREATE (m)-[:HAS_TITLE]-> (titleApostle)
+	MATCH (title:Title {titleBishop:$titleBishop})
+	CREATE (m)-[:HAS_TITLE]-> (titleBishop)
+	
+	CREATE (h1:History1)
+		SET
+		h1.LogNo = 1,
+		h1.HistoryRecord = $history1
+		h1.HistoryDate = date($history1Date)
+	MERGE (m)-[:HAS_LEADERSHIP_HISTORY]->(h1)
+
+	CREATE (h2:History2)
+		SET
+		h2.LogNo = 2,
+		h2.HistoryRecord = $history2
+		h2.HistoryDate = date($history2Date)
+	MERGE (m)-[:HAS_LEADERSHIP_HISTORY]->(h2)
+
 	RETURN m
 	"""
 	),
 	AddTown(
 		townName: String
 		lWhastappNumber: String
-		apostle: String
+		apostleship: String
 	):Town
 	@cypher(statement:
 	"""
@@ -157,62 +300,110 @@ type Mutation {
     	ON CREATE SET 
 		t.townID = apoc.create.uuid()
 	MERGE (m:Member {whatsappNumber: $lWhatsappNumber})
-	MATCH (l: Leader {rank: 'GSO'})
-	MERGE (m)-[:IS_LEADER]->(l)
-	MERGE(l)-[:LEADS]->(t)
+	MERGE (m)-[:LEADS_TOWN]->(t)
+	MATCH (centre1: Centre {name: $centre1})<-[r1:HAS_CENTRE]-(t)
+		DELETE r1
+	MERGE (centre2)<-[:HAS_CENTRE]-(com)
+	MATCH (centre2: Centre {name: $centre2})<-[r2:HAS_CENTRE]-(t)
+		DELETE r2
+	MERGE (centres)<-[:HAS_CENTRE]-(t)
+	RETURN t
 	"""
 	),
 	AddCommunity(
 		communityName: String
 		lWhastappNumber: String
 		town: String
+		centre1: String
+		centre2: String
 	):Community
 	@cypher(statement:
 	"""
-	MERGE(c:Community {name:$communityName})
+	MERGE(com:Community {name:$communityName})
     	ON CREATE SET
-		c.communityID = apoc.create.uuid()
+		com.communityID = apoc.create.uuid()
 	MERGE (m:Member {whatsappNumber: $lWhatsappNumber})
-	MATCH (l: Leader {rank: 'Community Leader'})
 	MATCH (t:Town {name: $town})
-	MERGE (t)-[:HAS_COMMUNITY]->(c)
-	MERGE (m)-[:IS_LEADER]->(l)
-	MERGE(l)-[:LEADS]->(c)
+	MERGE (t)-[:HAS_COMMUNITY]->(com)
+	MERGE (m)-[:LEADS_COMMUNITY]->(com)
+	MATCH (centre1: Centre {name: $centre1})<-[r1:HAS_CENTRE]-(com)
+		DELETE r1
+	MERGE (centre2)<-[:HAS_CENTRE]-(com)
+	MATCH (centre2: Centre {name: $centre2})<-[r2:HAS_CENTRE]-(com)
+		DELETE r2
+	MERGE (centres)<-[:HAS_CENTRE]-(com)
+	RETURN com
 	"""
 	),
-	AddCentre(
+	StartCentre(
 		centreName: String
 		lWhastappNumber: String
-		community: String
-	):Community
+		centreName: String
+		centreLeader: String
+		communityName: String
+	):Centre
 	@cypher(statement:
 	"""
 	MERGE(c:Centre {name:$centreName})
     	ON CREATE SET 
-		c.communityID = apoc.create.uuid()
+		c.centreID = apoc.create.uuid()
 	MERGE (m:Member {whatsappNumber: $lWhatsappNumber})
-	MATCH (l: Leader {rank: 'Centre Leader'})
-	MATCH (com:Community {name: $community})
+	MATCH (com:Community {name: $communityName})
 	MERGE (com)-[:HAS_CENTRE]->(c)
-	MERGE (m)-[:IS_LEADER]->(l)
-	MERGE(l)-[:LEADS]->(c)
+	MERGE (m)-[:LEADS_CENTRE]->(c)
 	"""
 	),
 	MakeCentreLeader(
 		lWhastappNumber: String
-		rank: String
 		groupToLead: String
 		startDate: Date
-		):
+		):Member
 	@cypher(statement:
 	"""
 	MATCH (m:Member {whatsappNumber: $lWhatsappNumber})
-	MATCH (l:Leader {rank:$rank})
 	MATCH (c:Centre {name: $groupToLead})
-	MERGE (d:TimeGraph {leaderRoleStartDate:$startDate})
-	MERGE (m)-[:IS_LEADER]->(l)
-	MERGE (l)-[:LEADS]->(c)
+	MERGE (l)-[leads:LEADS_CENTRE]->(c)
+		SET leads.startDate: $startDate
+	MERGE (hist:LeaderHistory {HistoryDate:$startDate, HistoryRecord: `m.firstName m.lastName has been has been made the Centre Leader of $groupNotToLead`})
+	MERGE (m)-[:HAS_LEADERSHIP_HISTORY]->(hist)
+	RETURN m
+	"""
+	),
+	RemoveCentreLeader(
+		lWhastappNumber: String
+		groupToNotLead: String
+		endDate: Date
+		):Member
+	@cypher(statement:
+	"""
+	MATCH (m:Member {whatsappNumber: $lWhatsappNumber})
+	MATCH (c:Centre {name: $groupToNotLead})
+	MERGE (l)-[leads:LEADS_CENTRE]->(c)
+		SET leads.endDate: $endDate
+	MERGE (hist:LeaderHistory {HistoryDate:$endDate, HistoryRecord: `m.firstName m.lastName has been has been removed as a centre leader of $groupNotToLead`})
+	MERGE (m)-[:HAS_LEADERSHIP_HISTORY]->(hist)
+	RETURN m
+	"""
+	),
+	TransferCentreLeader(
+		lWhastappNumber: String
+		oldGroupToLead: String
+		newGroupToLead: String
+		startDate: Date
+		endDate: Date
+		):Member
+	@cypher(statement:
+	"""
+	MATCH (m:Member {whatsappNumber: $lWhatsappNumber})
+	MATCH (oldc:Centre {name: $oldGroupToLead})
+	MATCH (newc:Centre {name: $newGroupToLead})
+	MATCH (l)-[leadsold:LEADS_CENTRE]->(oldc)
+		SET leadsold.edDate: $endDate
+	MERGE (l)-[leadsnew:LEADS_CENTRE]->(newc)
+		SET leadsnew.startDate: $startDate
+	MERGE (hist:LeaderHistory {HistoryDate:$endDate, HistoryRecord: `m.firstName m.lastName has been transferred from $oldc to $newc`})
+	MERGE (m)-[:HAS_LEADERSHIP_HISTORY]->(hist)
+	RETURN m
 	"""
 	)
-
 }
